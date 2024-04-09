@@ -21,7 +21,7 @@ global:
   #   repository: harbor/cache.quay.io/argoproj/argocd
 
 controller:
-  replicas: 2
+  replicas: 1
   extraArgs: [ "--kubectl-parallelism-limit", "5" ]
   podAnnotations:
     prometheus.io/scrape: "true"
@@ -49,7 +49,7 @@ redis:
 
 
 server:
-  replicas: 2
+  replicas: 1
   podAnnotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "8083"
@@ -62,7 +62,7 @@ server:
 
 ## Repo Server
 repoServer:
-  replicas: 2
+  replicas: 1
   extraArgs: [ "--parallelismlimit", "5" ]
   resources:
    requests: { cpu: 10m, memory: 256Mi }
