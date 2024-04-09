@@ -1,0 +1,5 @@
+# this is the actual gitops integrated values.yaml for the Argo CD setup.
+
+crds:
+  install: true
+  keep: true
