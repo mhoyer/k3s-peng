@@ -20,6 +20,13 @@ global:
   # image:
   #   repository: harbor/cache.quay.io/argoproj/argocd
 
+configs:
+  cm:
+    server.rbac.log.enforce.enable: true
+    exec.enabled: false
+    admin.enabled: true # !!!!
+    timeout.reconciliation: 60s # default 180s
+
 controller:
   replicas: 1
   extraArgs: [ "--kubectl-parallelism-limit", "5" ]
@@ -47,7 +54,6 @@ redis:
     requests: { cpu: 100m, memory: 320Mi }  # see `--maxmemory` option in `extraArgs` (plus 64MB buffer)
     limits: { memory: 320Mi }               # see `--maxmemory` option in `extraArgs` (plus 64MB buffer)
 
-
 server:
   replicas: 1
   podAnnotations:
@@ -58,7 +64,15 @@ server:
     limits: { memory: 192Mi }
   metrics:
     enabled: true
-  # ingress:
+  ingress:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    hostname: "localhost"
+    path: /argo-cd
+    pathType: Prefix
+    tls: false
 
 ## Repo Server
 repoServer:
