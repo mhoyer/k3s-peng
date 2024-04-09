@@ -26,6 +26,9 @@ configs:
     exec.enabled: false
     admin.enabled: true # !!!!
     timeout.reconciliation: 60s # default 180s
+  params:
+    server.insecure: false
+    server.basehref: /argo-cd # see ingress config in server: section
 
 controller:
   replicas: 1
@@ -66,9 +69,9 @@ server:
     enabled: true
   ingress:
     enabled: true
-    annotations:
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    annotations: {}
+      # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      # nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     hostname: "localhost"
     path: /argo-cd
     pathType: Prefix
