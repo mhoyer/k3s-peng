@@ -6,6 +6,7 @@ Install via `helm`:
 
 ```bash
 helm upgrade -i argo-cd oci://ghcr.io/argoproj/argo-helm/argo-cd --version 6.7.10 -f values.kick-off.yaml -n argocd --create-namespace
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 ```
 
 ## See also
