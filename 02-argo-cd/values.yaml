@@ -1,5 +1,75 @@
 # this is the actual gitops integrated values.yaml for the Argo CD setup.
 
+## ArgoCD configuration
+## Ref: https://github.com/argoproj/argo-cd
+## Based on: https://github.com/argoproj/argo-helm/blob/argo-cd-6.7.10/charts/argo-cd/values.yaml
+##           https://github.com/argoproj/argo-helm/compare/argo-cd-6.7.10..main#files_bucket
+
 crds:
   install: true
   keep: true
+
+global:
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: topology.kubernetes.io/zone
+      whenUnsatisfiable: ScheduleAnyway
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+  # image:
+  #   repository: harbor/cache.quay.io/argoproj/argocd
+
+controller:
+  replicas: 2
+  extraArgs: [ "--kubectl-parallelism-limit", "5" ]
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8082"
+  resources:
+    requests: { cpu: 500m, memory: 2Gi }
+    limits: { memory: 2Gi }
+  metrics:
+    enabled: true
+
+dex:
+  resources:
+    requests: { cpu: 10m, memory: 64Mi }
+    limits: { memory: 64Mi }
+
+redis:
+  extraArgs: [
+    "--tcp-backlog", "128",
+    "--bind", "0.0.0.0",
+    "--maxmemory", "256mb"                  # see https://redis.io/docs/manual/eviction/
+  ]
+  resources:
+    requests: { cpu: 100m, memory: 320Mi }  # see `--maxmemory` option in `extraArgs` (plus 64MB buffer)
+    limits: { memory: 320Mi }               # see `--maxmemory` option in `extraArgs` (plus 64MB buffer)
+
+
+server:
+  replicas: 2
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8083"
+  resources:
+    requests: { cpu: 100m, memory: 192Mi }
+    limits: { memory: 192Mi }
+  metrics:
+    enabled: true
+  # ingress:
+
+## Repo Server
+repoServer:
+  replicas: 2
+  extraArgs: [ "--parallelismlimit", "5" ]
+  resources:
+   requests: { cpu: 10m, memory: 256Mi }
+   limits: { memory: 1Gi }
+  metrics:
+    enabled: true
+
+  ## HACK https://github.com/argoproj/argo-cd/issues/9809#issuecomment-1298785315
+  containerSecurityContext:
+    seccompProfile: null
