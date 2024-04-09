@@ -14,7 +14,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 Roll out the `Application` resource for Argo CD to self reference the existing installation with the git repo.
 
 ```bash
-kubectl apply -f 02-argo-cd/argo-cd.app.yaml
+kubectl apply -f ./argo-cd.app.yaml
 ```
 
 ## See also
