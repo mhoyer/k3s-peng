@@ -72,8 +72,8 @@ server:
     annotations: {}
       # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       # nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    hostname: "localhost"
-    path: /argo-cd
+    hostname: "argo-cd.local"
+    path: /
     pathType: Prefix
     tls: false
 
