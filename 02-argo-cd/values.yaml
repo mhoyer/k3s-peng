@@ -28,7 +28,7 @@ configs:
     timeout.reconciliation: 60s # default 180s
   params:
     server.insecure: true
-    server.basehref: /argo-cd # see ingress config in server: section
+    # server.basehref: / # see ingress config in server: section
 
 controller:
   replicas: 1
