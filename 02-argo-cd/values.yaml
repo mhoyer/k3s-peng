@@ -40,6 +40,11 @@ argo-cd:
         name: external-secrets
         type: helm
         enableOCI: "true"
+      kyverno:
+        url: ghcr.io/kyverno/charts
+        name: kyverno
+        type: helm
+        enableOCI: "true"
 
   controller:
     replicas: 1
