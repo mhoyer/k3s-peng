@@ -44,8 +44,17 @@ spec:
             - .spec.conversion.webhook.clientConfig.caBundle
             - .spec.conversion.webhook.clientConfig.service.name
             - .spec.conversion.webhook.clientConfig.service.namespace
+
         - group: admissionregistration.k8s.io
           kind: ValidatingWebhookConfiguration
           jsonPointers: [ "/spec/name" ] # just a HACK
           jqPathExpressions:
             - .webhooks[]?.clientConfig.caBundle
+
+        # To no make ArgoCD go crazy about changes to the changing Kyverno ClusterPolicy resources
+        # see: https://medium.com/@charled.breteche/using-kyverno-policies-with-argocd-1a600c1b249
+        - group: kyverno.io
+          kind: ClusterPolicy
+          jsonPointers: [ "/spec/rules" ]
+          # jqPathExpressions:
+            # - .spec.rules[] | select(.name|test("autogen-."))
