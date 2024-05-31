@@ -1,21 +1,22 @@
-## https://github.com/external-secrets/external-secrets/blob/helm-chart-0.9.14/deploy/charts/external-secrets/values.yaml
-## https://github.com/external-secrets/external-secrets/compare/helm-chart-0.9.14...main#files_bucket
-replicaCount: 1
-revisionHistoryLimit: 0
-# image:
-#   repository: harbor/cache.ghcr.io/external-secrets/external-secrets
-leaderElect: false
-resources:
-  requests: { cpu: 10m, memory: 32Mi }
-  limits: { memory: 128Mi }
+external-secrets:
+  ## https://github.com/external-secrets/external-secrets/blob/helm-chart-0.9.14/deploy/charts/external-secrets/values.yaml
+  ## https://github.com/external-secrets/external-secrets/compare/helm-chart-0.9.14...main#files_bucket
+  replicaCount: 1
+  revisionHistoryLimit: 0
+  # image:
+  #   repository: harbor/cache.ghcr.io/external-secrets/external-secrets
+  leaderElect: false
+  resources:
+    requests: { cpu: 10m, memory: 32Mi }
+    limits: { memory: 128Mi }
 
-# Probably not required for our setup. See: https://github.com/external-secrets/external-secrets/issues/1270
-webhook: { create: false }
-certController: { create: false }
+  # Probably not required for our setup. See: https://github.com/external-secrets/external-secrets/issues/1270
+  webhook: { create: false }
+  certController: { create: false }
 
-deploymentAnnotations:
-  reloader.stakater.com/auto: "true"
+  deploymentAnnotations:
+    reloader.stakater.com/auto: "true"
 
-podAnnotations:
-  prometheus.io/port: "8080"
-  prometheus.io/scrape: "true"
+  podAnnotations:
+    prometheus.io/port: "8080"
+    prometheus.io/scrape: "true"
