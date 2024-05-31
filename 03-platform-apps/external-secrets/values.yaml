@@ -1,4 +1,4 @@
-## https://github.com/external-secrets/external-secrets/blob/helm-chart-0.9.13/deploy/charts/external-secrets/values.yaml
+## https://github.com/external-secrets/external-secrets/blob/helm-chart-0.9.14/deploy/charts/external-secrets/values.yaml
 ## https://github.com/external-secrets/external-secrets/compare/helm-chart-0.9.14...main#files_bucket
 replicaCount: 1
 revisionHistoryLimit: 0
