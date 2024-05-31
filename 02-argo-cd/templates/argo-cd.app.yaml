@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/mhoyer/k3s-peng
     targetRevision: main
-    path: ./02-argo-cd
+    path: 02-argo-cd
     helm:
       releaseName: argo-cd
   destination:
