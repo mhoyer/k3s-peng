@@ -7,3 +7,6 @@ dependencies:
   - name: "kyverno"
     version: "3.2.4"
     repository: "oci://ghcr.io/kyverno/charts"
+  - name: "kyverno-policies"
+    version: "3.2.3"
+    repository: "oci://ghcr.io/kyverno/charts"
