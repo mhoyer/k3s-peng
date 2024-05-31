@@ -1,4 +1,4 @@
-includeArgocdApp: true
+includeApplications: true
 
 argo-cd:
   ## ArgoCD configuration
