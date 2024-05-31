@@ -1,12 +1,13 @@
-## https://github.com/argoproj/argo-helm/blob/argocd-image-updater-0.10.1/charts/argocd-image-updater/values.yaml
-## https://github.com/argoproj/argo-helm/compare/argocd-image-updater-0.10.1...main#files_bucket
-# image:
-  # repository: harbor/cache.hub.docker.com/argoprojlabs/argocd-image-updater
-extraArgs:
-  - --interval
-  - 1m
-resources:
-  requests: { cpu: 10m, memory: 50Mi }
-  limits: { memory: 200Mi }
-config:
-  registries: []
+argocd-image-updater:
+  ## https://github.com/argoproj/argo-helm/blob/argocd-image-updater-0.10.1/charts/argocd-image-updater/values.yaml
+  ## https://github.com/argoproj/argo-helm/compare/argocd-image-updater-0.10.1...main#files_bucket
+  # image:
+    # repository: harbor/cache.hub.docker.com/argoprojlabs/argocd-image-updater
+  extraArgs:
+    - --interval
+    - 1m
+  resources:
+    requests: { cpu: 10m, memory: 50Mi }
+    limits: { memory: 200Mi }
+  config:
+    registries: []
