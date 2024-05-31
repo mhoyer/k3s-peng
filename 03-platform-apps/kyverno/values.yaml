@@ -1,3 +1,3 @@
-kyverno:
+kyverno: {}
   ## https://github.com/kyverno/kyverno/blob/kyverno-chart-3.2.4/charts/kyverno/values.yaml
   ## https://github.com/kyverno/kyverno/compare/kyverno-chart-3.2.4...main#files_bucket
