@@ -35,6 +35,11 @@ argo-cd:
         name: argo-helm
         type: helm
         enableOCI: "true"
+      external-secrets:
+        url: ghcr.io/external-secrets/charts
+        name: external-secrets
+        type: helm
+        enableOCI: "true"
 
   controller:
     replicas: 1
