@@ -5,5 +5,5 @@ version: "0.1.0"
 
 dependencies:
   - name: "external-secrets"
-    repository: "oci://ghcr.io/external-secrets/charts"
     version: "0.9.14"
+    repository: "oci://ghcr.io/external-secrets/charts"
