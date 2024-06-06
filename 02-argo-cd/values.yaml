@@ -10,6 +10,7 @@ argo-cd:
 
   fullnameOverride: argo-cd
   global:
+    domain: argo-cd.local
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: topology.kubernetes.io/zone
