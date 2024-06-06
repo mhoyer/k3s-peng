@@ -26,7 +26,15 @@ argo-cd:
       server.rbac.log.enforce.enable: true
       exec.enabled: false
       admin.enabled: true # !!!!
+      accounts.alice: apiKey, login
+      accounts.bob: apiKey, login
       timeout.reconciliation: 60s # default 180s
+
+    secret:
+      extra:
+        # docker run --rm -it elswork/apache2-utils sh -c "htpasswd -nBC10 '' | tr -d ':'"
+        accounts.alice.password: "$2y$10$.B4Z2Lz87Nr93OmmK1ugRuD.Rdg8fSp7NMpt.gDnM7pTOQF4KbZ7S" # ! this will always reset when syncing
+
     params:
       server.insecure: true
       # server.basehref: / # see ingress config in server: section
