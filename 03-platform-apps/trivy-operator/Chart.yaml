@@ -1,0 +1,9 @@
+apiVersion: v2
+name: trivy-operator-wrapper
+type: application
+version: "0.1.0"
+
+dependencies:
+  - name: "trivy-operator"
+    version: "0.23.2"
+    repository: "oci://ghcr.io/aquasecurity/helm-charts"

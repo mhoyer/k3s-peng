@@ -1,0 +1,17 @@
+trivy-operator:
+  ## https://github.com/aquasecurity/trivy-operator/blob/v0.21.2/deploy/helm/values.yaml
+  ## https://github.com/aquasecurity/trivy-operator/compare/v0.21.2...main#files_bucket
+  replicaCount: 1
+  revisionHistoryLimit: 0
+  # global:
+  #   image:
+  #     registry: harbor/cache.ghcr.io
+
+  operator:
+    replicas: 1
+    revisionHistoryLimit: 0
+
+  # trivy:
+  #   resources:
+  #     requests: { cpu: 100m, memory: 128Mi }
+  #     limits: { memory: 512Mi }
