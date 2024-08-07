@@ -1,9 +1,31 @@
 includeApplications: true
 
-argo-cd:
+selfRefApp:
+  source:
+    repository:
+      url: https://github.com/mhoyer/k3s-peng
+      path: 02-argo-cd
+      branch: HEAD
+
+applicationSets:
+  workload:
+    repository:
+      url: https://github.com/mhoyer/k3s-peng
+      revision: HEAD
+      files:
+        - path: 04-demo-apps/*/.gitops.yaml
+
+  platform:
+    repository:
+      url: https://github.com/mhoyer/k3s-peng
+      revision: HEAD
+      files:
+        - path: 03-platform-apps/*/.gitops.yaml
+
+argocd:
   ## ArgoCD configuration
-  ## Based on: https://github.com/argoproj/argo-helm/blob/argo-cd-6.7.13/charts/argo-cd/values.yaml
-  ##           https://github.com/argoproj/argo-helm/compare/argo-cd-6.7.13..main#files_bucket
+  ## Based on: https://github.com/argoproj/argo-helm/blob/argo-cd-6.7.17/charts/argo-cd/values.yaml
+  ##           https://github.com/argoproj/argo-helm/compare/argo-cd-6.7.17..main#files_bucket
   crds:
     install: true
     keep: false
@@ -18,22 +40,24 @@ argo-cd:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
         whenUnsatisfiable: ScheduleAnyway
+    revisionHistoryLimit: 0
     # image:
-    #   repository: harbor/cache.quay.io/argoproj/argocd
+    #   repository: harbor/argoproj/argocd
 
   configs:
     cm:
       server.rbac.log.enforce.enable: true
       exec.enabled: false
       admin.enabled: true # !!!!
-      accounts.alice: apiKey, login
-      accounts.bob: apiKey, login
+      users.anonymous.enabled: true
       timeout.reconciliation: 60s # default 180s
-
-    secret:
-      extra:
-        # docker run --rm -it elswork/apache2-utils sh -c "htpasswd -nBC10 '' | tr -d ':'"
-        accounts.alice.password: "$2y$10$.B4Z2Lz87Nr93OmmK1ugRuD.Rdg8fSp7NMpt.gDnM7pTOQF4KbZ7S" # ! this will always reset when syncing
+    rbac:
+      policy.default: role:workload-read
+      policy.csv: |
+        p, role:workload-read, applications, get, workload/*, allow
+        p, role:workload-read, logs, get, workload/*, allow
+        p, role:workload-read, applications, sync, workload/*, allow
+        g, system:anonymous, role:workload-read
 
     params:
       server.insecure: true
@@ -57,22 +81,26 @@ argo-cd:
 
   controller:
     replicas: 1
+    revisionHistoryLimit: 0
     extraArgs: [ "--kubectl-parallelism-limit", "5" ]
     podAnnotations:
       prometheus.io/scrape: "true"
       prometheus.io/port: "8082"
     resources:
-      requests: { cpu: 500m, memory: 2Gi }
-      limits: { memory: 2Gi }
+      requests: { cpu: 500m, memory: 500Mi }
+      limits: { memory: 1Gi }
     metrics:
       enabled: true
 
   dex:
+    enabled: false
     resources:
       requests: { cpu: 10m, memory: 64Mi }
       limits: { memory: 64Mi }
 
   redis:
+    # image:
+    #   repository: harbor/library/redis
     extraArgs:
       - "--tcp-backlog"
       - "128"
@@ -105,16 +133,25 @@ argo-cd:
       pathType: Prefix
       tls: false
 
-  ## Repo Server
   repoServer:
     replicas: 1
     extraArgs: [ "--parallelismlimit", "5" ]
     resources:
-    requests: { cpu: 10m, memory: 256Mi }
-    limits: { memory: 1Gi }
+      requests: { cpu: 10m, memory: 256Mi }
+      limits: { memory: 1Gi }
     metrics:
       enabled: true
 
+  applicationSet:
+    resources:
+      requests: { cpu: 10m, memory: 64Mi }
+      limits: { memory: 128Mi }
+
+  notifications:
+    resources:
+      requests: { cpu: 10m, memory: 32Mi }
+      limits: { memory: 32Mi }
+
     ## HACK https://github.com/argoproj/argo-cd/issues/9809#issuecomment-1298785315
-    containerSecurityContext:
-      seccompProfile: null
+    # containerSecurityContext:
+    #   seccompProfile: null
