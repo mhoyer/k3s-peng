@@ -1,0 +1,20 @@
+{{ if .Values.includeApplications -}}
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: platform
+  labels:
+    {{- include "argo-cd-wrapper.labels" . | nindent 4 }}
+spec:
+  description: "To enable deployment of platform resources to this cluster."
+
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+  destinations:
+    - namespace: "platform"
+      server: "https://kubernetes.default.svc"
+  sourceRepos:
+    - "*"
+
+{{- end }}

@@ -1,0 +1,48 @@
+{{ if .Values.includeApplications -}}
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: workload
+  labels:
+    {{- include "argo-cd-wrapper.labels" . | nindent 4 }}
+spec:
+  description: "To enable application deployments (actual workload) to this cluster."
+
+  # Only permit applications to deploy to the default namespace in a particular cluster
+  destinations:
+    - namespace: "default"
+      server: "https://kubernetes.default.svc"
+
+  # Deny all cluster-scoped resources from being created, except for `Namespace`
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+
+  # Allow all namespaced-scoped resources to be created, except for some kinds
+  namespaceResourceBlacklist:
+    - group: ""
+      kind: LimitRange
+    - group: ""
+      kind: LoadBalancer
+    - group: ""
+      kind: ResourceQuota
+    - group: ""
+      kind: NetworkPolicy
+    - group: ""
+      kind: Secret
+
+  # Deny all namespaced-scoped resources from being created, except for Deployment and StatefulSet
+  # namespaceResourceWhitelist:
+  # - group: "apps"
+  #   kind: Deployment
+  # - group: "apps"
+  #   kind: StatefulSet
+
+  # Enables namespace orphaned resource monitoring.
+  # orphanedResources:
+  #   warn: false
+
+  sourceRepos:
+    - "*"
+
+{{- end }}

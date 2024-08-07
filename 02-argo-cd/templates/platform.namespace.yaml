@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "platform"
+  labels:
+    {{- include "argo-cd-wrapper.labels" . | nindent 4 }}
+
