@@ -22,7 +22,7 @@ applicationSets:
       files:
         - path: 03-platform-apps/*/.gitops.yaml
 
-argocd:
+argo-cd:
   ## ArgoCD configuration
   ## Based on: https://github.com/argoproj/argo-helm/blob/argo-cd-6.7.17/charts/argo-cd/values.yaml
   ##           https://github.com/argoproj/argo-helm/compare/argo-cd-6.7.17..main#files_bucket
@@ -52,12 +52,12 @@ argocd:
       users.anonymous.enabled: true
       timeout.reconciliation: 60s # default 180s
     rbac:
-      policy.default: role:workload-read
+      policy.default: role:anonymous-read
       policy.csv: |
-        p, role:workload-read, applications, get, workload/*, allow
-        p, role:workload-read, logs, get, workload/*, allow
-        p, role:workload-read, applications, sync, workload/*, allow
-        g, system:anonymous, role:workload-read
+        p, role:anonymous-read, applications, get, */*, allow
+        p, role:anonymous-read, logs, get, */*, allow
+        p, role:anonymous-read, applications, sync, */*, allow
+        g, system:anonymous, role:anonymous-read
 
     params:
       server.insecure: true
@@ -101,6 +101,8 @@ argocd:
   redis:
     # image:
     #   repository: harbor/library/redis
+    replicas: 1
+    revisionHistoryLimit: 0
     extraArgs:
       - "--tcp-backlog"
       - "128"
@@ -114,6 +116,7 @@ argocd:
 
   server:
     replicas: 1
+    revisionHistoryLimit: 0
     podAnnotations:
       prometheus.io/scrape: "true"
       prometheus.io/port: "8083"
@@ -135,6 +138,7 @@ argocd:
 
   repoServer:
     replicas: 1
+    revisionHistoryLimit: 0
     extraArgs: [ "--parallelismlimit", "5" ]
     resources:
       requests: { cpu: 10m, memory: 256Mi }

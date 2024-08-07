@@ -6,11 +6,23 @@ Install via `helm`:
 
 ```bash
 # kick-off install of the helm-chart itself w/o self-managing application
-helm install argo-cd -n argocd --create-namespace --dependency-update --set includeApplications=false .
+helm install argo-cd \
+    --namespace argo-cd \
+    --create-namespace  \
+    --dependency-update \
+    --set includeApplications=false \
+    -f ./values.yaml \
+    .
 
 # now that ArgoCD CRDs are deployed, enable self-managed loop by upgrading
 # the helm chart again including the ArgoCD self-management application.
-helm upgrade argo-cd -n argocd --create-namespace --set includeApplications=true .
+helm install argo-cd \
+    --namespace argo-cd \
+    --create-namespace  \
+    --dependency-update \
+    --set includeApplications=true \
+    -f ./values.yaml \
+    .
 ```
 
 Retrieve the generated `admin` password:
