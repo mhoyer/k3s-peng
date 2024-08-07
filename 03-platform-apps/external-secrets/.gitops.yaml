@@ -1,2 +1,3 @@
 gitops:
-  targetNS: "postgress"
+  destination:
+    namespace: "postgres"
