@@ -12,7 +12,9 @@ spec:
     - group: "*"
       kind: "*"
   destinations:
-    - namespace: "platform"
+    - namespace: '!kube-system'
+      server: '*'
+    - namespace: "*"
       server: "https://kubernetes.default.svc"
   sourceRepos:
     - "*"
