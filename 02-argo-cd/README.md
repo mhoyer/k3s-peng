@@ -34,7 +34,8 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 ### Uninstall
 
 ```bash
-helm uninstall argo-cd -n argocd
+helm uninstall argo-cd -n argo-cd
+kubectl delete ns argo-cd
 ```
 
 ## See also
