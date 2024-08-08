@@ -38,6 +38,16 @@ helm uninstall argo-cd -n argo-cd
 kubectl delete ns argo-cd
 ```
 
+## GitOps approach via ApplicationSets
+
+The provided `ApplicationSet` resources for `platform` and `workload` applications are going to look up for `.gitops.yaml` files following this schema:
+
+```yaml
+gitops:
+  destination:
+    namespace: "postgres"
+```
+
 ## See also
 
 * https://argo-cd.readthedocs.io/en/stable/getting_started/

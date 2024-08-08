@@ -1,0 +1,85 @@
+{{ if .Values.includeApplications -}}
+
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: platform
+  labels:
+    {{- include "argo-cd-wrapper.labels" . | nindent 4 }}
+spec:
+  goTemplate: true
+  # goTemplateOptions: ["missingkey=error"]
+  generators:
+    - git:
+        repoURL: "{{ .Values.applicationSets.platform.repository.url }}"
+        revision: "{{ .Values.applicationSets.platform.repository.revision }}"
+        files:
+          {{- .Values.applicationSets.platform.repository.files | toYaml | nindent 10 }}
+  template:
+    metadata:
+      name: "platform-{{`{{index .path.segments 1 }}`}}"
+    spec:
+      project: "platform"
+      source:
+        repoURL: "{{ .Values.applicationSets.platform.repository.url }}"
+        targetRevision: "{{ .Values.applicationSets.platform.repository.revision }}"
+        path: "{{`{{ .path.path }}`}}"
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: '{{`{{ .gitops | default dict | dig "destination" "namespace" "platform" }}`}}'
+      revisionHistoryLimit: 0
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+          - RespectIgnoreDifferences=true
+          - ServerSideApply=true
+        automated:
+          prune: true
+          selfHeal: true
+          allowEmpty: false
+
+      # see: https://github.com/argoproj/argo-cd/issues/9071
+      ignoreDifferences:
+        - group: apiextensions.k8s.io
+          kind: CustomResourceDefinition
+          jsonPointers: [ "/spec/name" ] # just a HACK
+          jqPathExpressions:
+            - .spec.conversion.webhook.clientConfig.caBundle
+            - .spec.conversion.webhook.clientConfig.service.name
+            - .spec.conversion.webhook.clientConfig.service.namespace
+
+        - group: admissionregistration.k8s.io
+          kind: ValidatingWebhookConfiguration
+          jsonPointers: [ "/spec/name" ] # just a HACK
+          jqPathExpressions:
+            - .webhooks[]?.clientConfig.caBundle
+
+        # To no make ArgoCD go crazy about changes to the changing Kyverno ClusterPolicy resources
+        # see: https://medium.com/@charled.breteche/using-kyverno-policies-with-argocd-1a600c1b249
+        - group: kyverno.io
+          kind: ClusterPolicy
+          jsonPointers: [ "/spec/rules" ]
+          # jqPathExpressions:
+            # - .spec.rules[] | select(.name|test("autogen-."))
+
+        - group: external-secrets.io
+          kind: ExternalSecret
+          jsonPointers: [ "/spec/dataFrom" ]
+          jqPathExpressions:
+            - '.spec.data[] | .remoteRef.conversionStrategy'
+            - '.spec.data[] | .remoteRef.decodingStrategy'
+            - '.spec.data[] | .remoteRef.metadataPolicy'
+            - '.spec.target.template.templateFrom[] | .target'
+            - '.spec.target.template.templateFrom[] | .configMap.items[] | .templateAs'
+
+        - group: postgresql.cnpg.io
+          kind: Cluster
+          jsonPointers: [ "/spec/nodeMaintenanceWindow" ]
+
+  templatePatch: |
+    metadata:
+      annotations:
+        gitops-debug: |
+          {{`{{- . | toYaml | nindent 6 }}`}}
+
+{{- end }}
